@@ -64,7 +64,7 @@ void Compare_Results(float result1[] , float result2[] , float result3[] , int s
             return;
         }
     }
-    std::cout<<"Both scalar and vector float addition results are equal!\n";
+    std::cout<<"\nBoth scalar and vector float addition results are equal!\n\n";
 
 }
 
@@ -100,6 +100,7 @@ int main(){
 
     // Execution Time for Vector 128-bit Float Addition
     avg_vector_time = vector_time / 1000000;
+    double performance1 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 128-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
 
     // Vector 256-bit Float Addition
@@ -113,7 +114,11 @@ int main(){
 
     // Execution Time for Vector 256-bit Float Addition
     avg_vector_time = vector_time / 1000000;
+    double performance2 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 256-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
+
+    std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \%  faster than scalar\n";
+    std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";
 
     // Validating the accuracy of Scalar and Vector Float Addition
     Compare_Results(result1 , result2 , result3 , size);
