@@ -65,7 +65,7 @@ void Compare_Results(float result1[] , float result2[] , float result3[] , int s
             return;
         }
     }
-    std::cout<<"Both scalar and vector multiplication results are equal!\n";
+    std::cout<<"\nBoth scalar and vector multiplication results are equal!\n\n";
 }
 
 int main(){
@@ -100,6 +100,7 @@ int main(){
     
     // Execution Time for Vector 128-bit Float Multiplication
     avg_vector_time = vector_time / 1000000;
+    double performance1 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 128-bit float Multiplication : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
 
     // Vector 256-bit Float Multiplication
@@ -113,7 +114,11 @@ int main(){
     
     // Execution Time for Vector 256-bit Float Multiplication
     avg_vector_time = vector_time / 1000000;
+    double performance2 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 256-bit float Multiplication : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
+    
+    std::cout <<"Vector 128-bit float Multiplication is " << performance1 <<" \% faster than scalar\n";
+    std::cout <<"\nVector 256-bit float Multiplication is " << performance2 <<" \% faster than scalar\n";
     
     // Validating the accuracy of Scalar and Vector Multiplication
     Compare_Results(result1 , result2 , result3 , size);
