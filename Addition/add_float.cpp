@@ -74,7 +74,7 @@ int main(){
     float arr1[] = {1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8} , arr2[] = {18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5} , result1[size] , result2[size] , result3[size];
     
     std::chrono::time_point<std::chrono::high_resolution_clock > start, end;
-    std::chrono::duration<double> scalar_time(0), vector_time(0) , avg_scalar_time , avg_vector_time;
+    std::chrono::duration<double> scalar_time(0), vector_time1(0) , vector_time2(0) ,avg_scalar_time , avg_vector_time;
  
     // Scalar Float Addition
     for (int i = 0; i < 1000000; ++i) {
@@ -95,11 +95,11 @@ int main(){
         start = std::chrono::high_resolution_clock ::now();
         Vector_Addition_128(arr1 , arr2 , result2 , size);
         end = std::chrono::high_resolution_clock ::now();
-        vector_time += (end - start);
+        vector_time1 += (end - start);
     }
 
     // Execution Time for Vector 128-bit Float Addition
-    avg_vector_time = vector_time / 1000000;
+    avg_vector_time = vector_time1 / 1000000;
     double performance1 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 128-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
 
@@ -109,11 +109,11 @@ int main(){
         start = std::chrono::high_resolution_clock ::now();
         Vector_Addition_256(arr1 , arr2 , result3 , size);
         end = std::chrono::high_resolution_clock ::now();
-        vector_time += (end - start);
+        vector_time2 += (end - start);
     }
 
     // Execution Time for Vector 256-bit Float Addition
-    avg_vector_time = vector_time / 1000000;
+    avg_vector_time = vector_time2 / 1000000;
     double performance2 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
     std::cout<<"Execution Time for Vector 256-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
 
