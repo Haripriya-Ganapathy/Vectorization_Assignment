@@ -87,6 +87,7 @@ void softmax_vectorize_128(float** input, float** result1, int row, int col){
 
     int i, j ;
     float** res = new float*[col];
+    
     //Initialize vectors with zero
     __m128 max =_mm_setzero_ps();
     __m128 sum =_mm_setzero_ps();
@@ -102,6 +103,7 @@ void softmax_vectorize_128(float** input, float** result1, int row, int col){
        res[i] = new float[col];
         
     }
+    //_mm_storeu_ps(r1, max); Print_Output(r1,col) ;
     for(i = 0; i < row; i++){
         //Load 2d array row wise into the vector
         __m128 b = _mm_loadu_ps(input[i]);
@@ -187,7 +189,6 @@ int main(){
     // Initialize the Input Array
     int row = 2, col = 4 , i, j;
     float **input = new float*[row] , **output = new float*[row] , **result1 = new float*[row], **result2 = new float*[row];
-
     for ( i = 0; i < row; ++i) {
         input[i] = new float[col];
         output[i] = new float[col];
@@ -195,7 +196,7 @@ int main(){
         result2[i] = new float[col];
         for ( j = 0; j < col; ++j) {
             // Initialize with consecutive numbers
-            input[i][j] = i * col + j;  
+            input[i][j] = (i * col)  + j;  
         }
     }
     std::cout<<"Input array: \n";
@@ -225,7 +226,7 @@ int main(){
     
     // Execution Time for Vectorized 128-bit Softmax Function
     std::chrono::duration<double> vector_time1 = end - start;
-    double performance1 = ((scalar_time.count()) / (vector_time1.count())) * 100  ;
+    double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100  ;
     std::cout<<"\nExecution Time for Vectorized 128-bit Softmax Funtion : "<< std::setprecision(3) << vector_time1.count()<<" microseconds\n" <<std::endl;
     
     std::cout<<"\nCalling Vectorized 256-bit Softmax function\n";
@@ -239,11 +240,11 @@ int main(){
     
     // Execution Time for Vectorized 256-bit Softmax Function
     std::chrono::duration<double> vector_time2 = end - start;
-    double performance2 = ((scalar_time.count()) / (vector_time2.count())) * 100  ;
+    double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count()) * 100  ;
     std::cout<<"\nExecution Time for Vectorized 256-bit Softmax Funtion : "<< std::setprecision(3) << vector_time2.count()<<" microseconds\n" <<std::endl;
     
     std::cout <<"Vector 128-bit Softmax function is " << performance1 <<" \% faster than scalar\n";
     std::cout <<"Vector 256-bit Softmax function is " << performance2 <<" \% faster than scalar\n";
-
+    
     return 0;
 }

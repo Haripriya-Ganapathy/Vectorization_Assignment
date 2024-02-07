@@ -1,7 +1,7 @@
 # include <iostream>
 # include <immintrin.h>
 # include <chrono>
-# include <algorithm>
+//# include <algorithm>
 # include <iomanip>
 
 void Print_Output_Arrays(int out[], int size)
@@ -192,15 +192,16 @@ void av_clip_uint8_vectorize_256(int a[] , int vec4[] , int size)
 
 int main()
 {
-    int size = 10;
+    int size = 8;
     unsigned char char_result1 , char_result2[size] ,char_result3[size],c[size];
-    int aVal[] = {3, 10, -4, 7, 500, -6, 260, -256, 50, 0} , aMin[] = {-2, -12, -3, -8, -550, -4, -200, -260, -20, -1} , aMax[] = {2, 12, 3, 8, 550, 4, 200, 260, 20, 1} ; 
+    int aVal[] = {3, 10, -4, 7, 500, -6, 260, -256} , aMin[] = {-2, -12, -3, -8, -550, -4, -200, -260} , aMax[] = {2, 12, 3, 8, 550, 4, 200, 260} ; 
     int result, vec1[size], vec2[size], vec3[size], vec4[size];
 
     /* Vectorize av_clip function */
     std::cout<<"\nCalling av_clip function";
     auto start = std::chrono::high_resolution_clock::now();
     result = av_clip(3,-2,2);
+    
     auto end = std::chrono::high_resolution_clock::now();
     std::cout<<"\nScalar Result: "<< result;
 
@@ -220,7 +221,7 @@ int main()
 
     // Execution Time for Vectorized 128-bit av_clip Function
     std::chrono::duration<double> vector_time1 = end - start;
-    double performance1 = ((scalar_time.count()) / (vector_time1.count())) * 100 ;
+    double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 128-bit av_clip Funtion : "<< std::setprecision(3) << vector_time1.count()<<" microseconds\n" <<std::endl;
     
     std::cout<<"Calling av_clip 256-bit Vectorized function\n\n";
@@ -235,7 +236,7 @@ int main()
 
     // Execution Time for Vectorized 256-bit av_clip Function
     std::chrono::duration<double> vector_time2 = end - start;
-    double performance2 = ((scalar_time.count()) / (vector_time2.count())) * 100 ;
+    double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 256-bit av_clip Funtion : "<< std::setprecision(3) << vector_time2.count()<<" microseconds\n" <<std::endl;
     
     std::cout <<"Vector 128-bit av_Clip function is " << performance1 <<" \% faster than scalar\n";
@@ -263,7 +264,7 @@ int main()
 
     //Execution Time for Vectorized 128-bit av_clip_uint8 Function
     vector_time1 = end - start;
-    performance1 = ((scalar_time.count()) / (vector_time1.count())) * 100 ;
+    performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 128-bit av_clip_uint8 Funtion : "<< std::setprecision(3) << vector_time1.count()<<" microseconds\n" <<std::endl;
     
     std::cout<<"Calling av_clip_uint8 256-bit Vectorized function\n\n";
@@ -276,7 +277,7 @@ int main()
 
     //Execution Time for Vectorized 256-bit av_clip_uint8 Function
     vector_time2 = end - start;
-    performance2 = ((scalar_time.count()) / (vector_time2.count())) * 100 ;
+    performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 256-bit av_clip_uint8 Funtion : "<< std::setprecision(3) << vector_time2.count()<<" microseconds\n" <<std::endl;
     
     std::cout <<"Vector 128-bit av_Clip_uint8 function is " << performance1 <<" \% faster than scalar\n";

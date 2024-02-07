@@ -70,8 +70,8 @@ void custom_abs_vectorize_256(int a[], int res2[], int size)
 
 int main()
 {
-    int result, size = 15;
-    int input[] = {3, -4, 50, -17, 40, -2, 0, -10, -3, 100, 234, -200, -11, 39, 15} , res1[size], res2[size];
+    int result, size = 8;
+    int input[] = {3, -4, 50, -17, 40, -2, 0, -10} , res1[size], res2[size];
 
     /* Vectorize custom_abs function */
     std::cout<<"\nCalling custom_abs function";
@@ -79,9 +79,8 @@ int main()
     result = custom_abs(-300);
     auto end = std::chrono::high_resolution_clock::now();
 
-    // Print the results
     std::cout<<"\nScalar Result for -300 : "<< result;
-   
+
     // Execution Time for Scalar custom_abs Funtion
     std::chrono::duration<double> scalar_time = end - start;
     std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<< std::setprecision(3) << scalar_time.count()<<" microseconds\n" <<std::endl;
@@ -97,7 +96,7 @@ int main()
 
     // Execution Time for Vectorized 128-bit custom_abs Function
     std::chrono::duration<double> vector_time1 = end - start;
-    double performance1 = ((scalar_time.count()) / (vector_time1.count())) * 100 ;
+    double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 128-bit custom_abs Funtion : "<< std::setprecision(3) << vector_time1.count()<<" microseconds\n" <<std::endl;
     
     std::cout<<"Calling custom_abs 256-bit Vectorized function\n\n";
@@ -111,7 +110,7 @@ int main()
     
     // Execution Time for Vectorized 256-bit custom_abs Function
     std::chrono::duration<double> vector_time2 = end - start;
-    double performance2 = ((scalar_time.count()) / (vector_time2.count())) * 100 ;
+    double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count()) * 100 ;
     std::cout<<"Execution Time for Vectorized 256-bit custom_abs Funtion : "<< std::setprecision(3) << vector_time2.count()<<" microseconds\n" <<std::endl;
 
     std::cout <<"Vector 128-bit custom_abs function is " << performance1 <<" \% faster than scalar\n";
