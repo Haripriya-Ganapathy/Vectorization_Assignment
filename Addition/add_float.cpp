@@ -74,48 +74,36 @@ int main(){
     float arr1[] = {1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8} , arr2[] = {18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5} , result1[size] , result2[size] , result3[size];
     
     std::chrono::time_point<std::chrono::high_resolution_clock > start, end;
-    std::chrono::duration<double> scalar_time(0), vector_time1(0) , vector_time2(0) ,avg_scalar_time , avg_vector_time;
+    std::chrono::duration<double> scalar_time, vector_time1 , vector_time2 ;
  
-    // Scalar Float Addition
-    for (int i = 0; i < 1000000; ++i) {
-        // This loop is just to calculate the small timing durations 
-        start = std::chrono::high_resolution_clock ::now();
-        Scalar_Addition(arr1 , arr2 , result1 , size);
-        end = std::chrono::high_resolution_clock ::now();
-        scalar_time += (end - start);
-    }
+    start = std::chrono::high_resolution_clock ::now();
+    Scalar_Addition(arr1 , arr2 , result1 , size);
+    end = std::chrono::high_resolution_clock ::now();
+    scalar_time = end - start;
     
     // Execution Time for Scalar Float Addition
-    avg_scalar_time = scalar_time / 1000000;
-    std::cout<<"\nExecution Time for Scalar float Addition\t : "<< std::setprecision(4) << avg_scalar_time.count()<<" microseconds\n" <<std::endl;
+    std::cout<<"\nExecution Time for Scalar float Addition\t : "<< std::setprecision(3) << scalar_time.count()<<" microseconds\n" <<std::endl;
 
     // Vector 128-bit Float Addition
-    for (int i = 0; i < 1000000; ++i) {
-        // This loop is just to calculate the small timing durations 
-        start = std::chrono::high_resolution_clock ::now();
-        Vector_Addition_128(arr1 , arr2 , result2 , size);
-        end = std::chrono::high_resolution_clock ::now();
-        vector_time1 += (end - start);
-    }
-
+    start = std::chrono::high_resolution_clock ::now();
+    Vector_Addition_128(arr1 , arr2 , result2 , size);
+    end = std::chrono::high_resolution_clock ::now();
+    vector_time1 = end - start;
+    
     // Execution Time for Vector 128-bit Float Addition
-    avg_vector_time = vector_time1 / 1000000;
-    double performance1 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
-    std::cout<<"Execution Time for Vector 128-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
+    double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count() ) * 100 ;
+    std::cout<<"Execution Time for Vector 128-bit float Addition : "<< std::setprecision(4) << vector_time1.count()<<" microseconds\n" <<std::endl;
 
     // Vector 256-bit Float Addition
-    for (int i = 0; i < 1000000; ++i) {
-        // This loop is just to calculate the small timing durations 
-        start = std::chrono::high_resolution_clock ::now();
-        Vector_Addition_256(arr1 , arr2 , result3 , size);
-        end = std::chrono::high_resolution_clock ::now();
-        vector_time2 += (end - start);
-    }
+    
+    start = std::chrono::high_resolution_clock ::now();
+    Vector_Addition_256(arr1 , arr2 , result3 , size);
+    end = std::chrono::high_resolution_clock ::now();
+    vector_time2 = end - start;
 
     // Execution Time for Vector 256-bit Float Addition
-    avg_vector_time = vector_time2 / 1000000;
-    double performance2 = ((avg_scalar_time.count()) / (avg_vector_time.count()) * 100) ;
-    std::cout<<"Execution Time for Vector 256-bit float Addition : "<< std::setprecision(4) << avg_vector_time.count()<<" microseconds\n" <<std::endl;
+    double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count() ) * 100 ;
+    std::cout<<"Execution Time for Vector 256-bit float Addition : "<< std::setprecision(4) << vector_time2.count()<<" microseconds\n" <<std::endl;
 
     std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \%  faster than scalar\n";
     std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";
