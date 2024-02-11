@@ -55,31 +55,59 @@ void softmax(float** input, float **output , int row, int col) {
 
 __m128 exp_approximation_128(__m128 x) {
     
-    int i;
+    //Find elements which are negative 
+    __m128 cmp = _mm_cmpgt_ps(x, _mm_setzero_ps());
+
+    //Perform the abs function for the input x
+    __m128 mask = _mm_set1_ps(-0.0f);
+    x = _mm_andnot_ps(mask, x);
+
+    //Use Taylor series to calculate e^x
     __m128 result = _mm_set1_ps(1.0); // Initialize result to 1
     __m128 term = _mm_set1_ps(1.0);   // Initialize term to 1
     
-    for (i = 1; i <= 15; ++i) { // Taylor series approximation up to 15 terms
+    for (int i = 1; i <= 20; ++i) { // Taylor series approximation up to 15 terms
         
         term = _mm_mul_ps(term, _mm_div_ps(x, _mm_set1_ps(i))); // Compute (term * x / i)
         result = _mm_add_ps(result, term); // Add the term to the result
     }
-    return result;
+
+    //Find e^-x using reciprocal function
+    __m128 neg_result = _mm_rcp_ps(result);
+
+    //Blend the results based on condition for negative exponent
+    __m128 final_result = _mm_blendv_ps(neg_result, result, cmp);
+    
+    return final_result;
 
 }
 
 __m256 exp_approximation_256(__m256 x) {
     
-    int i;
+    //Find elements which are negative 
+    __m256 cmp = _mm256_cmp_ps(x, _mm256_setzero_ps(), _CMP_GT_OQ);
+
+    //Perform the abs function for the input x
+    __m256 mask = _mm256_set1_ps(-0.0f);
+    x = _mm256_andnot_ps(mask, x);
+
+    //Use Taylor series to calculate e^x
     __m256 result = _mm256_set1_ps(1.0); // Initialize result to 1
-    __m256 term = _mm256_set1_ps(1.0);   // Initialize term to 1
+    __m256 term   = _mm256_set1_ps(1.0);   // Initialize term to 1
     
-    for (i = 1; i <= 15; ++i) { // Taylor series approximation up to 15 terms
+    for (int i = 1; i <= 20; ++i) { // Taylor series approximation up to 15 terms
         
         term = _mm256_mul_ps(term, _mm256_div_ps(x, _mm256_set1_ps(i))); // Compute (term * x / i)
         result = _mm256_add_ps(result, term); // Add the term to the result
     }
-    return result;
+
+    //Find e^-x using reciprocal function
+    __m256 neg_result = _mm256_rcp_ps(result);
+
+    //Blend the results based on condition for negative exponent
+    __m256 final_result = _mm256_blendv_ps(neg_result, result, cmp);
+    
+    return final_result;
 
 }
 
@@ -189,6 +217,7 @@ int main(){
     // Initialize the Input Array
     int row = 2, col = 4 , i, j;
     float **input = new float*[row] , **output = new float*[row] , **result1 = new float*[row], **result2 = new float*[row];
+    
     for ( i = 0; i < row; ++i) {
         input[i] = new float[col];
         output[i] = new float[col];
@@ -196,7 +225,7 @@ int main(){
         result2[i] = new float[col];
         for ( j = 0; j < col; ++j) {
             // Initialize with consecutive numbers
-            input[i][j] = (i * col)  + j;  
+            input[i][j] = i * col + j;  
         }
     }
     std::cout<<"Input array: \n";

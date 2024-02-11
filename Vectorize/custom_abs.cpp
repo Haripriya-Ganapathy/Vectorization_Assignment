@@ -32,9 +32,9 @@ void custom_abs_vectorize_128(int a[], int res1[], int size)
         __m128i negated = _mm_sub_epi32(_mm_xor_si128(var, negativeMask), negativeMask);
         
         // Blend results based on sign
-        __m128i result = _mm_blendv_epi8(var, negated, negativeMask);
+        //__m128i result = _mm_blendv_epi8(var, negated, negativeMask);
 
-        _mm_storeu_si128((__m128i*)(res1 + i), result); 
+        _mm_storeu_si128((__m128i*)(res1 + i), negated); 
     }
 
     for (i = size - (size % 4); i < size; ++i) {
@@ -57,9 +57,9 @@ void custom_abs_vectorize_256(int a[], int res2[], int size)
         __m256i negated = _mm256_sub_epi32(_mm256_xor_si256(var, negativeMask), negativeMask);
         
         // Blend results based on sign
-        __m256i result = _mm256_blendv_epi8(var, negated, negativeMask);
+        //__m256i result = _mm256_blendv_epi8(var, negated, negativeMask);
 
-        _mm256_storeu_si256((__m256i*)(res2 + i), result); 
+        _mm256_storeu_si256((__m256i*)(res2 + i), negated); 
     }
 
     for (i = size - (size % 8); i < size; ++i) {
