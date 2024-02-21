@@ -114,14 +114,12 @@ int main(){
     float vec1[4] , vec2[4] , vec3[4] , vec4[4] ;
     float vect1[8] , vect2[8];
 
-    std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
-    std::chrono::duration<double> scalar_time, vector_time1 , vector_time2 ;
 
     /* Scalar Complex Multiplication */ 
     std::cout<<"Scalar Results:\n-------------------\n";
     
     // Complex Multiply a and b 
-    start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     Scalar_Complex_Multiply(a , b , out1);
     Print_Output_Arrays(out1);
 
@@ -138,8 +136,8 @@ int main(){
     Print_Output_Arrays(out4);
 
     std::cout<<"-------------------\n\n";
-    end = std::chrono::high_resolution_clock::now();
-    scalar_time = end - start;
+    auto end = std::chrono::high_resolution_clock::now();
+     std::chrono::duration<double>  scalar_time = end - start;
 
     /* Vector Complex 128-bit Multiplication */
     std::cout<<"Vector Results for 128-bit :\n-------------------\n";
@@ -163,7 +161,7 @@ int main(){
 
     std::cout<<"-------------------\n\n";    
     end = std::chrono::high_resolution_clock::now();
-    vector_time1 = end - start;
+    std::chrono::duration<double>  vector_time1 = end - start;
 
     /* Vector Complex 256-bit Multiplication */
     std::cout<<"Vector Results for 256-bit :\n-------------------\n";
@@ -179,12 +177,25 @@ int main(){
 
     std::cout<<"-------------------\n";
     end = std::chrono::high_resolution_clock::now();
-    vector_time2 = end - start;
+     std::chrono::duration<double>  vector_time2 = end - start;
+
+    double s_time = std::chrono::duration_cast<std::chrono::microseconds>(scalar_time).count();
+    double v_time1 = std::chrono::duration_cast<std::chrono::microseconds>(vector_time1).count();
+    double v_time2 = std::chrono::duration_cast<std::chrono::microseconds>(vector_time2).count();
 
     // Execution Time
-    std::cout<<"\nExecution Time for Scalar float Multiplication         : "<< std::setprecision(4) << scalar_time.count()<<" microseconds\n" <<std::endl;
-    std::cout<<"Execution Time for Vector 128-bit float Multiplication : "<< std::setprecision(4) << vector_time1.count()<<" microseconds\n" <<std::endl;
-    std::cout<<"Execution Time for Vector 256-bit float Multiplication : "<< std::setprecision(4) << vector_time2.count()<<" microseconds\n" <<std::endl;    
+    std::cout<<"\nExecution Time for Scalar float Multiplication         : "<< std::setprecision(4) 
+    << scalar_time.count() <<" microseconds\n" <<std::endl;
+    std::cout<<"Execution Time for Vector 128-bit float Multiplication : "<< std::setprecision(4) 
+    << vector_time1.count() <<" microseconds\n" <<std::endl;
+    std::cout<<"Execution Time for Vector 256-bit float Multiplication : "<< std::setprecision(4) 
+    << vector_time2.count() <<" microseconds\n" <<std::endl;    
+
+       double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100 ;
+    double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count()) * 100 ;
+
+    std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \% faster than scalar\n";
+    std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";
 
     return 0;
 }

@@ -70,18 +70,18 @@ void Compare_Results(float result1[] , float result2[] , float result3[] , int s
 
 int main(){
 
-    int size = 17;
-    float arr1[] = {1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8} , arr2[] = {18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5} , result1[size] , result2[size] , result3[size];
+    int size = 170;
+    float arr1[] = {1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8,1.2,2.3,3.4,4.5,5.6,6.7,7.8,8.9,9.0,10.1,11.2,12.3,13.4,14.5,15.6,16.7,17.8} , arr2[] = {18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5,18.9,19.0,20.1,21.2,22.3,23.4,24.5,25.6,26.7,27.8,28.9,29.0,30.1,31.2,32.3,33.4,34.5} , result1[size] , result2[size] , result3[size];
     
-    std::chrono::time_point<std::chrono::high_resolution_clock > start, end;
     std::chrono::duration<double> scalar_time, vector_time1 , vector_time2 ;
  
-    start = std::chrono::high_resolution_clock ::now();
+    auto start = std::chrono::high_resolution_clock ::now();
     Scalar_Addition(arr1 , arr2 , result1 , size);
-    end = std::chrono::high_resolution_clock ::now();
+    auto end = std::chrono::high_resolution_clock ::now();
     scalar_time = end - start;
     
     // Execution Time for Scalar Float Addition
+    // double s_time = std::chrono::duration_cast<std::chrono::microseconds>(scalar_time).count();
     std::cout<<"\nExecution Time for Scalar float Addition\t : "<< std::setprecision(3) << scalar_time.count()<<" microseconds\n" <<std::endl;
 
     // Vector 128-bit Float Addition
@@ -95,15 +95,18 @@ int main(){
     std::cout<<"Execution Time for Vector 128-bit float Addition : "<< std::setprecision(4) << vector_time1.count()<<" microseconds\n" <<std::endl;
 
     // Vector 256-bit Float Addition
-    
     start = std::chrono::high_resolution_clock ::now();
     Vector_Addition_256(arr1 , arr2 , result3 , size);
     end = std::chrono::high_resolution_clock ::now();
     vector_time2 = end - start;
 
+
     // Execution Time for Vector 256-bit Float Addition
     double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count() ) * 100 ;
     std::cout<<"Execution Time for Vector 256-bit float Addition : "<< std::setprecision(4) << vector_time2.count()<<" microseconds\n" <<std::endl;
+
+    // double performance1 = ((s_time - v_time1) / s_time) * 100 ;
+    // double performance2 = ((s_time - v_time2) / s_time) * 100 ;
 
     std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \%  faster than scalar\n";
     std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";

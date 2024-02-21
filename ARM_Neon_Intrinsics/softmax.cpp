@@ -1,5 +1,7 @@
 # include <iostream>
 # include <arm_neon.h>
+# include <chrono>
+# include <cmath>
 
 void Print_Output_Arrays(float** out, int row, int col)
 {
@@ -91,6 +93,44 @@ void softmax_vectorize_32x4(float** input, float** result, int row, int col){
     }
 }
 
+
+void softmax(float** input, float **output , int row, int col) {
+    
+    int i, j;
+    // Calculate the maximum value along each column
+    float* max_vals = new float[col];
+    for (j = 0; j < col; ++j) {
+        float max_val = input[0][j];
+        for (i = 1; i < row; ++i) {
+            max_val = std::max(max_val, input[i][j]);
+        }
+        max_vals[j] = max_val;
+    }
+    
+    // Subtract the maximum value for numerical stability and compute exponentials
+    for (i = 0; i < row; ++i) {
+        for (j = 0; j < col; ++j) {
+            output[i][j] = exp(input[i][j] - max_vals[j]);
+        }
+    }
+    
+    // Compute the sum of exponentials along each column
+    float* exp_sums = new float[col];
+    for (j = 0; j < col; ++j) {
+        exp_sums[j] = 0.0;
+        for (i = 0; i < row; ++i) {
+            exp_sums[j] += output[i][j];
+        }
+    }
+    
+    // Divide each element by the sum of exponentials
+    for (i = 0; i < row; ++i) {
+        for (j = 0; j < col; ++j) {
+           output[i][j] /= exp_sums[j];
+        }
+    }
+
+}
 int main(){
 
     // Initialize the Input Array
@@ -99,6 +139,7 @@ int main(){
     
     for ( i = 0; i < row; ++i) {
         input[i] = new float[col];
+        output[i] = new float[col];
         result[i] = new float[col];
         for ( j = 0; j < col; ++j) {
             // Initialize with consecutive numbers
@@ -109,13 +150,37 @@ int main(){
     //Print the Input array
     std::cout<<"Input array: \n";
     Print_Output_Arrays(input, row, col);
+
+    /* Vectorize Softmax function */
+    auto start = std::chrono::high_resolution_clock::now();
+    softmax(input, output , row, col);
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    //Print the Output Array
+    std::cout<<"\nScalar Result:\n";
+    Print_Output_Arrays(output, row, col);
+
+    // Execution Time for Scalar Softmax Funtion
+    std::chrono::duration<double> scalar_time = end - start;
+    std::cout<<"\nExecution Time for Scalar Softmax Funtion\t      : "<< scalar_time.count()<<" microseconds\n" <<std::endl;
     
     //Call the Softmax Function
+    start = std::chrono::high_resolution_clock::now();
     softmax_vectorize_32x4(input, result, row, col);
+    end = std::chrono::high_resolution_clock::now();
+
+        // Execution Time for Scalar Softmax Funtion
+    std::chrono::duration<double> vector_time = end - start;
+    std::cout<<"\nExecution Time for Scalar Softmax Funtion\t      : "<< vector_time.count()<<" microseconds\n" <<std::endl;
 
     //Print the Result Array
     std::cout<<"\nResult:\n";
     Print_Output_Arrays(result, row, col);
+
+double performance1= ((scalar_time.count() - vector_time.count()) / scalar_time.count()) * 100  ;
+       
+       std::cout <<"Vector 128-bit Softmax function is " << performance1 <<" \% faster than scalar\n";
+    // std::cout <<"Vector 256-bit Softmax function is " << performance2 <<" \% faster than scalar\n";
 
     return 0;
 }

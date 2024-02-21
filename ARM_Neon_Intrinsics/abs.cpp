@@ -1,5 +1,7 @@
 # include <iostream>
 # include <arm_neon.h>
+# include <iomanip>
+# include <chrono>
 
 void Print_Output_Arrays(int out[], int size)
 {
@@ -8,6 +10,12 @@ void Print_Output_Arrays(int out[], int size)
         std::cout << out[i] << "\t";
     }
     std::cout << "\n";
+}
+
+static  int custom_abs(int a)
+{
+    if (a < 0) return -a;
+    else    return a;
 }
 
 void custom_abs_vectorize_32x4(int a[], int result[], int size)
@@ -42,7 +50,40 @@ int main(){
     int size = 10;
     int input[] = {3, -4, 50, -17, 40, -2, 0, -10, -99, 2} , result[size];
 
+    /* Vectorize custom_abs function */
+    std::cout<<"\nCalling custom_abs function";
+    auto start = std::chrono::high_resolution_clock::now();
+    int res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    res = custom_abs(-300);
+    // res = custom_abs(-300);
+    
+    // std::cout<<"\nScalar Result for -300 : "<< res;
+    auto end = std::chrono::high_resolution_clock::now();
+
+    // Execution Time for Scalar custom_abs Funtion
+    std::chrono::duration<double> scalar_time = end - start;
+    std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<< std::setprecision(3) << scalar_time.count()<<" microseconds\n" <<std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     custom_abs_vectorize_32x4(input, result, size);
+    end = std::chrono::high_resolution_clock::now();
+
+    // Execution Time for Scalar custom_abs Funtion
+    std::chrono::duration<double> vector_time = end - start;
+    // double v_time = std::chrono::duration_cast<std::chrono::microseconds>(vector_time).count();
+    std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<< std::setprecision(3) << vector_time.count()<<" microseconds\n" <<std::endl;
+
+    double performance1 = ((scalar_time.count() - vector_time.count()) / scalar_time.count()) * 100 ;
+    std::cout <<"\nVector 256-bit Integer Addition is " << performance1 <<" \% faster than scalar\n";
+
     Print_Output_Arrays(result, size);
 
     return 0;

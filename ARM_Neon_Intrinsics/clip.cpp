@@ -1,5 +1,6 @@
 # include <iostream>
 # include <arm_neon.h>
+# include <chrono>
 
 void Print_Output_Arrays(int out[], int size)
 {
@@ -75,6 +76,19 @@ void av_clip_uint8_vectorize_32x4(int a[], int vec2[], int size){
    
 }
 
+static unsigned char av_clip_uint8(int a)
+{
+    if (a & (~0xFF))    return (-a) >> 31;
+    else                return a;
+}
+
+static  int av_clip(int a, int amin, int amax)
+{
+    if (a < amin)      return amin;
+    else if (a > amax) return amax;
+    else               return a;
+}
+
 int main(){
 
    int size = 8;
@@ -85,11 +99,70 @@ int main(){
    std::cout<<"Arrays with a value\t: ";    Print_Output_Arrays(aVal,size);
    std::cout<<"Arrays with aMin value\t: "; Print_Output_Arrays(aMin,size);
    std::cout<<"Arrays with aMax value\t: "; Print_Output_Arrays(aMax,size);
-   av_clip_vectorize_32x4(aVal, aMin, aMax, vec1, size);
-   std::cout<<"av_clip function result : ";  Print_Output_Arrays(vec1, size);
 
+   std::cout<<"\nCalling av_clip function";
+    auto start = std::chrono::high_resolution_clock::now();
+    int result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+     result = av_clip(3,-2,2);
+    //  std::cout<<"\n";
+    //  std::cout<<"\nScalar Result: "<< result;
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    
+   
+
+    // Execution Time for Scalar av_clip Funtion
+    std::chrono::duration<double> scalar_time1 = end - start;
+    // double s_time = std::chrono::duration_cast<std::chrono::microseconds>(scalar_time).count();
+    std::cout<<"\nExecution Time for Scalar av_clip Funtion\t      : "<<  scalar_time1.count()<<" microseconds\n" <<std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
+   av_clip_vectorize_32x4(aVal, aMin, aMax, vec1, size);
+    end = std::chrono::high_resolution_clock::now();
+   std::cout<<"av_clip function result : ";  Print_Output_Arrays(vec1, size);
+   std::chrono::duration<double> vector_time1 = end - start;
+
+   std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<<  vector_time1.count()<<" microseconds\n" <<std::endl;
+
+start = std::chrono::high_resolution_clock::now();
+unsigned char char_result1;
+    char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+     char_result1 = av_clip_uint8(256);
+    char_result1 = av_clip_uint8(256);
+
+    // std::cout<<"Scalar Result: "<< (int)char_result1;
+    end = std::chrono::high_resolution_clock::now();
+    
+    //Execution Time for Scalar av_clip_uint8 Funtion
+     std::chrono::duration<double>  scalar_time2 = end - start;
+    // s_time = std::chrono::duration_cast<std::chrono::microseconds>(scalar_time).count();
+    std::cout<<"\nExecution Time for Scalar av_clip_uint8 Funtion\t\t   : "<< scalar_time2.count()<<" microseconds\n" <<std::endl;
+    
+    start = std::chrono::high_resolution_clock::now();
    av_clip_uint8_vectorize_32x4(aVal, vec2, size);
+    end = std::chrono::high_resolution_clock::now();
+
    std::cout<<"av_clip_uint8 result\t: ";Print_Char_Output_Arrays(vec2, char_result, size);
+     std::chrono::duration<double>  vector_time2 = end - start;
+    std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<<  vector_time2.count()<<" microseconds\n" <<std::endl;
+
+   double performance1 = ((scalar_time1.count() - vector_time1.count()) / scalar_time1.count()) * 100 ;
+   double performance2 = ((scalar_time2.count() - vector_time2.count()) / scalar_time2.count()) * 100 ;
+
+    std::cout <<"\nVector 256-bit Integer Addition is " << performance1 <<" \% faster than scalar\n";
+     std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";
 
    return 0;
 }

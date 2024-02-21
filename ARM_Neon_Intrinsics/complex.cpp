@@ -1,13 +1,35 @@
 # include <iostream>
 # include <arm_neon.h>
+# include <iomanip>
+# include <chrono>
 
-void print_output(float out[], int size){
+
+void Print_Output_Arrays(float out[]){
 
     int i;
-    for(i = 0; i < size; i++){
-        std::cout<<out[i]<<" ";
+    for(i = 0 ; i < 4 ; i++){
+        //Printing the output array
+        std::cout << out[i] <<" ";
+    }   
+    std::cout << "\n";
+
+}
+void Scalar_Complex_Multiply(float x[] , float y[] , float output[]) {
+
+    /*
+      x = {a,b,d,e} i.e a + bi and d + ei
+      y = {c,d,f,g} i.e c + di and f + gi
+      output = {ac - bd , ad + bc , df - eg , gf + ef}
+
+    */
+    int i;
+    for(i = 0 ; i < 4 ; i += 2){ // Incrementing i by 2 times
+        //Real part
+        output[i] = (x[i] * y[i]) - (x[i+1] * y[i+1]);
+
+        // Imaginary part
+        output[i+1] = (x[i] * y[i+1]) + (x[i+1] * y[i]);
     }
-    std::cout<<"\n";
 }
 
 void Vector_Complex_Multiply_32x4(float v1[] ,float v2[] ,float final_result[]){
@@ -43,9 +65,56 @@ int main(){
     float out1[4] , out2[4] , out3[4] , out4[4] ;
     float vec1[4] , vec2[4] , vec3[4] , vec4[4] ;
 
-    Vector_Complex_Multiply_32x4(a, b, vec1);
-    print_output(vec1, 4);
 
+    /* Scalar Complex Multiplication */ 
+    std::cout<<"Scalar Results:\n-------------------\n";
+    
+    // Complex Multiply a and b 
+    auto start = std::chrono::high_resolution_clock::now();
+    Scalar_Complex_Multiply(a , b , out1);
+    Print_Output_Arrays(out1);
+
+    // Complex Multiply c and d 
+    Scalar_Complex_Multiply(c , d , out2);
+    Print_Output_Arrays(out2);
+
+    // Complex Multiply e and f 
+    Scalar_Complex_Multiply(e , f , out3);
+    Print_Output_Arrays(out3);
+
+    // Complex Multiply g and h 
+    Scalar_Complex_Multiply(g , h , out4);
+    Print_Output_Arrays(out4);
+
+    std::cout<<"-------------------\n\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    // auto scalar_time = end - start;
+
+std::chrono::duration<double> scalar_time = end - start;
+    std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<< std::setprecision(3) << scalar_time.count()<<" microseconds\n" <<std::endl;
+   
+    start = std::chrono::high_resolution_clock::now();
+    Vector_Complex_Multiply_32x4(a, b, vec1);
+    Print_Output_Arrays(vec1);
+
+    Vector_Complex_Multiply_32x4(c, d, vec2);
+    Print_Output_Arrays(vec2);
+
+    Vector_Complex_Multiply_32x4(e, f, vec3);
+    Print_Output_Arrays(vec3);
+
+    Vector_Complex_Multiply_32x4(g, h, vec4);
+    Print_Output_Arrays(vec4);
+
+     end = std::chrono::high_resolution_clock::now();
+    
+std::chrono::duration<double> vector_time = end - start;
+    // double v_time = std::chrono::duration_cast<std::chrono::microseconds>(vector_time).count();
+    std::cout<<"\nExecution Time for Scalar custom_abs Funtion\t\t : "<< std::setprecision(3) << vector_time.count()<<" microseconds\n" <<std::endl;
+
+
+    double performance1 = ((scalar_time.count() - vector_time.count()) / scalar_time.count()) * 100 ;
+std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \% faster than scalar\n";
 
     return 0;
 }
