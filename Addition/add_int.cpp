@@ -86,7 +86,7 @@ int main(){
     scalar_time = end - start;
     
     // Execution Time for Scalar Addition
-    std::cout << "\nExecution Time for Scalar Integer Addition\t   : " <<  std::setprecision(4) << scalar_time.count() << " microseconds\n" << std::endl;
+    std::cout << "\nExecution Time for Scalar Integer Addition is " <<  std::setprecision(4) << scalar_time.count() << " microseconds\n" << std::endl;
 
     // Vector 128-bit Integer Addition
     start = std::chrono::high_resolution_clock ::now();
@@ -96,7 +96,7 @@ int main(){
     
     // Execution Time for Vector 128-bit Integer Addition
     double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count()) * 100 ;
-    std::cout << "Execution Time for Vector 128-bit Integer Addition : " << std::setprecision(4) << vector_time1.count() << " microseconds\n" << std::endl;
+    std::cout << "Execution Time for Vector 128-bit Integer Addition is: " << std::setprecision(4) << vector_time1.count() << " microseconds\n" << std::endl;
 
     
     start = std::chrono::high_resolution_clock ::now();
@@ -106,7 +106,7 @@ int main(){
 
     // Execution Time for Vector 256-bit Addition
     double performance2 = ((scalar_time.count() - vector_time2.count()) / scalar_time.count())* 100 ;
-    std::cout << "Execution Time for Vector 256-bit Integer Addition : " << std::setprecision(4) << vector_time2.count() << " microseconds\n" << std::endl;
+    std::cout << "Execution Time for Vector 256-bit Integer Addition is: " << std::setprecision(4) << vector_time2.count() << " microseconds\n" << std::endl;
     
     std::cout <<"Vector 128-bit Integer Addition is " << performance1 <<" \% faster than scalar\n";
     std::cout <<"\nVector 256-bit Integer Addition is " << performance2 <<" \% faster than scalar\n";
