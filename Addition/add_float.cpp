@@ -92,7 +92,7 @@ int main(){
     
     // Execution Time for Vector 128-bit Float Addition
     double performance1 = ((scalar_time.count() - vector_time1.count()) / scalar_time.count() ) * 100 ;
-    std::cout<<"Execution Time for Vector 128-bit float Addition is "<< std::setprecision(4) << vector_time1.count()<<" microseconds\n" <<std::endl;
+    std::cout<<"Execution Time for Vector 128-bit float Addition is : "<< std::setprecision(4) << vector_time1.count()<<" microseconds\n" <<std::endl;
 
     // Vector 256-bit Float Addition
     start = std::chrono::high_resolution_clock ::now();
